@@ -1,3 +1,6 @@
+NOTE: this app was designed to run as a simple cp for the chumby, I just
+havent gotten around to writing a readme yet.
+
 ChumbyBrowser is a straightforward "kiosk-style" browser application designed
 for [Chumby One devices](http://www.chumby.com/).
 It is built using Qt's integrated WebKit browsing widgets.
