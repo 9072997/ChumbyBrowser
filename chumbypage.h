@@ -20,12 +20,13 @@ class ChumbyPage : public QWebPage
 public:
     // Construct a ChumbyPage. If handler is null, no CommandHandler is
     // exposed to JavaScript.
-    ChumbyPage(ChumbyCommandHandler *handler=0, QObject *parent=0);
+    ChumbyPage(ChumbyCommandHandler *handler=0, QObject *parent=0, QObject *widgetView=0);
     ~ChumbyPage() {}
 
 public slots:
     // Exposes a ChumbyCommandHandler to the page's mainFrame().
     void addCommandHandlerToFrame();
+    void addWidgetHandlerToFrame();
 
 protected:
     // Logs otherwise invisible JavaScript console output.
@@ -34,6 +35,7 @@ protected:
 private:
    // ChumbyCommandHandler that will be exposed to the page after every page load.
    ChumbyCommandHandler *command_handler;
+   QObject *widgetview;
 };
 
 #endif // CHUMBYPAGE_H

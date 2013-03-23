@@ -31,6 +31,8 @@ MainWindow::MainWindow(const QUrl &url, QWebPage *custom_page, QWidget *parent)
         webview->load(url);
         webview->show();
 
+        MainWindow::webview = webview;
+
     } else {
         qFatal("Failed to find required 'webView' element in ui.");
     }
@@ -62,4 +64,8 @@ MainWindow::MainWindow(const QUrl &url, QWebPage *custom_page, QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::goTo(const QString url) {
+    webview->load(QUrl(url));
 }

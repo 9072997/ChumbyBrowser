@@ -25,8 +25,12 @@ public:
     MainWindow(const QUrl &url, QWebPage *custom_page = 0, QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void goTo(const QString);
+
 private:
     Ui::MainWindowClass *ui;
+    QWebView *webview;
 };
 
 #endif // MAINWINDOW_H

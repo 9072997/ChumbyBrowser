@@ -55,9 +55,6 @@
      <height>240</height>
     </size>
    </property>
-   <property name="cursor">
-    <cursorShape>CrossCursor</cursorShape>
-   </property>
    <widget class="QWebView" name="webView">
     <property name="geometry">
      <rect>
@@ -84,9 +81,6 @@
       <width>320</width>
       <height>240</height>
      </size>
-    </property>
-    <property name="cursor">
-     <cursorShape>CrossCursor</cursorShape>
     </property>
     <property name="url">
      <url>

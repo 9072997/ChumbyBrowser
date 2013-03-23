@@ -8,10 +8,12 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     chumbypage.cpp \
     chumbybuttonhandler.cpp \
-    chumbycmdhandler.cpp
+    chumbycmdhandler.cpp \
+    chumbyknobhandler.cpp
 HEADERS += mainwindow.h \
     chumbypage.h \
     chumbybuttonhandler.h \
-    chumbycmdhandler.h
+    chumbycmdhandler.h \
+    chumbyknobhandler.h
 FORMS += mainwindow.ui
 CONFIG += console
