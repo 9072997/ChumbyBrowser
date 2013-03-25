@@ -65,6 +65,7 @@ void ChumbyButtonHandler::handleTopButtonPress(bool show) {
     } else {
         w->hide();
         qDebug("Hideing CP");
+	w->goTo("http://localhost/cp");
     }
 }
 
