@@ -1,109 +1,34 @@
-NOTE: this app was designed to run as a simple cp for the chumby, I just
-havent gotten around to writing a readme yet.
+webkitCP is a webkit based control pannel for the Chumby One. It is intended to be run off of a usb stick. For binary builds see the [thred](http://forum.chumby.com/viewtopic.php?id=8716) on the fourm.
 
-ChumbyBrowser is a straightforward "kiosk-style" browser application designed
-for [Chumby One devices](http://www.chumby.com/).
-It is built using Qt's integrated WebKit browsing widgets.
+## Basic Usage
+On startup you will be asked to calibrate the touchscreen. You will only need to do this once. After calibration is done you will be presented with the control pannel. At the top their is a clock and beneth that their are three buttons. In order from right to left they are My Widgets, Add Widgets, and Settings represented by the Chumby logo, a plus, and a gear respectively. Below that is a red bar used for adjusting volume.The fisrt time you start the Control Pannel you will have no widgets, so tap the green plus. You will see a list of avalible widgets. Right now the selection is limited, sorry. Tap the yellow arrow next to the name of any application to install it (NOTE: widgets have total access to your Chumby, and theirfore your network; they could view network trafic and plant viruses, so exercise caution, as with the installation of any other program). After that you will see a screen asking for confirmation. Tap the green check to cointinue installation. After the widget is installed you will be returned to the main screen of the control pannel. To open the widget tap the Chumby logo, then tap the yellow arrow next to the widget you would like to view. That widget is now running to see it you must press the top button of the Chumby. The top button is used to switch between the widget view and the control pannel view.
 
-#### OVERVIEW
+## Settings
+In settings you may click the red "X" to uninstall widgets. The red bar at the bottom adjusts brightness. The blue icon of two computers will activate sshd so you can ssh into the chumby (NOTE: no action is displayed on the screen when sshd is starded). The red arrow will take you back to the main screen of the control pannel.
 
-The browser runs full-screen on the Chumby. Users can navigate pages using
-the touchscreen. Input from the hardware buttons on the device is converted
-into keypress events that can be handled via JavaScript.
+## Widgets
+For those who would like to write widgets here is the format: A widget is a tar file with the extention ".chw" (for CHumby Widget). The tar file may be gzip compressed and may cointain any combination of the folders "usr", "www", and "bin", the contents of which will be copied to "/mnt/webkitCP/userapp/usr", "/mnt/webkitCP/userapp/www", and "/mnt/webkitCP/userapp/bin" respectively. Note that the www folder in a ".chw" file may cointain multiple widgets, so a ".chw" file is more of a package. It is recomended that your package include a folder inside the www folder with the name of your widget. The list of installed widgets is obtained by listing all folders in "/mnt/webkitCP/userapp/www". When the user opens your widget that folder will be loaded in a fullscreen webkit frame. The "bin" folder may be used for custom scripts or binaries which will be accessible to javascript. Note that scripts (bash, perl, and php) may be used directly in the "www" folder as cgi scripts. The usr folder is intended for storing misalanious files like user prefrences. Remenber that it is shared, so put your files in a folder, or name your files didtinctively.
 
-By creating and serving your own HTML+CSS+JavaScript content, you can show the
-content you want, with the behaviour you want. It can effectively replace the
-Flash-based widget structure that runs on the Chumby by default.
+### Binaries
+Custom binaries may reside in the bin folder of a ".chw" file. To use them use the javascript code
+```javascript
+result = ChumbyCommandHandler.run("myCommandName", []);
+```
+or
+```javascript
+result = ChumbyCommandHandler.run("myCommandName", ["argument1", "argument2", "argument3"]);
+```
+the object result will cointain the error code, stdout, and stderr from the program. These may be accessed like this
+```javascript
+console.log("Exit code:", result.exitcode);
+console.log("stdout:",    result.stdout);
+console.log("stderr:",    result.stderr);
+````
 
-Advanced functionality can be added to pages using the basic
-JavaScript<->System communication available through a special object made
-available to JavaScript by the browser through Qt's WebKit bridge.
-More on this below in the usage section.
+### More Comming Soon
 
+## Credit
 
-#### REQUIREMENTS
+Based on ChumbyBrowser by Stefan A. van der Meer (stefanvandermeer@gmail.com)
 
- - Chumby One (Falconwing) device
- - Qt 4.6.X or 4.7.X cross-compiled for Chumby (4.7.1 tested, 4.5 may work)
- - Cross-compilation environment for compiling the browser
-
-
-#### COMPILATION
-
-Like any other Qt application. The Qt Creator IDE can be convenient, as you
-can open the .pro project file, select the appropriate location of the Qt
-libraries that you have cross-compiled for Chumby, and hit "Build project".
-
-
-#### USAGE
-
-Assuming you have Qt up and running on the Chumby (ie. demo apps work), this
-is straightforward. In the directory where the chbrowser binary is, run:
-    $ ./chbrowser --url=http://www.example.com
-
-I recommend you run a small web server on your local network that serves the
-content for the Chumby. Websites not designed for the Chumby mostly work, but
-are not very pleasant to read or navigate.
-
-In writing pages for your Chumby to display, you can get a lot done in JScript
-(performance is quite good). However, for some specific uses it is necessary
-to have access to the native applications and scripts on the device. This is
-facilitated by the ChumbyBrowser through an object that allows JavaScript to
-semi-indirectly run specific executables and receive their output.
-
-To give JavaScript access to a certain executable file, you must specify a
-"command path" to the browser. This is a path to a directory that contains
-executables/"commands" that JavaScript may run. For example, in the directory
-where you have placed the chbrowser executable:
-
-    $ mkdir commands
-    $ ln -s /usr/chumby/scripts/signal_strength commands/wifi
-    $ ./chbrowser --url=http://myserver/ --command-path=./commands/
-
-This makes a Chumby script, which returns some XML with information about the
-device's wireless connection, available to JavaScript as the command "wifi".
-You access it as follows in a script on a page loaded in the browser:
-   
-    var result = ChumbyCommandHandler.run("wifi", []);
-
-    console.log("Exit code:", result.exitcode);
-    console.log("stdout:",    result.stdout);
-    console.log("stderr:",    result.stderr);
-
-You can then treat the result as any other object and parse the output, etc.
-Note the second argument to the run method, here an empty list. This should be
-a list of strings: the command-line arguments to use when running the command.
-
-The ChumbyCommandHandler object is in fact a Qt object exposed to the page by
-the browser. It checks if the command is available and executes it in a
-subprocess with the given arguments (if any), before returning the results back
-to JavaScript.
-
-Clearly this can give JavaScript a lot of power if you expose certain
-executables to it as commands. Use with caution if you are loading remote
-(script) content on your Chumby. It is quite easy to modify the browser to
-use a different command handler that uses more sandboxing and security, if
-you feel like writing one.
-
-
-#### KNOWN ISSUES
-
- - Memory-intensive content is problematic. Many large images on a single page
-   can crash the application. There is simply not enough memory available on
-   the device to handle that kind of content. Not a problem for most uses.
-
- - Audio/Video tags can only work if you compile Qt with Phonon support. Even
-   then, the Chumby appears to lack the http plugin for GStreamer, making it
-   impossible to play remote content, unless you also compile said plugin
-   (souphttpsrc). For sound, it may be better to utilize the `aplay` and
-   `btplayd` applications available on the Chumby via the command handler.
-   Other HTML5 tags like canvas do work.
-
-
-#### CREDIT
-
-Stefan A. van der Meer (stefanvandermeer@gmail.com)
-See also the included LICENSE document.
-
-Note that I am not affiliated with Chumby Industries in any way.
-
+I am not affiliated with Chumby Industries in any way.
